@@ -2,6 +2,6 @@
 
 
 
-Route::get('/', 'TasksController@index');
+Route::get('/test', 'TasksController@index');
 
 Route::resource('tasks', 'TasksController');
