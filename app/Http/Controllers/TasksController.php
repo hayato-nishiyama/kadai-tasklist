@@ -9,7 +9,7 @@ use App\Task;
 class TasksController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * リソースのリストを表示します。
      *
      * @return \Illuminate\Http\Response
      */
@@ -23,7 +23,7 @@ class TasksController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * 新しいリソースを作成するためのフォームを表示します。
      *
      * @return \Illuminate\Http\Response
      */
@@ -37,7 +37,7 @@ class TasksController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 新しく作成したリソースをストレージに保存します。
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -45,7 +45,8 @@ class TasksController extends Controller
     public function store(Request $request)
     {   
         $this->validate($request, [
-            'status' => 'required|max:10', 
+            'content' => "required|max:191",
+            'status' => "required|max:10", 
         ]);
         
         $task = new Task;
@@ -57,14 +58,14 @@ class TasksController extends Controller
     }
     
     /**
-     * Display the specified resource.
+     * 指定したリソースを表示します。
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
      public function show($id)
     {
-        $task = Task::find($id);
+        $task = Task::findOrFail($id);
 
         return view('tasks.show', [
             'task' => $task,
@@ -72,14 +73,14 @@ class TasksController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * 指定されたリソースを編集するためのフォームを表示します。
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
      public function edit($id)
     {
-        $task = Task::find($id);
+        $task = Task::findOrFail($id);
 
         return view('tasks.edit', [
             'task' => $task,
@@ -87,7 +88,7 @@ class TasksController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * ステレージ内の指定されたリソースを更新します。
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -96,10 +97,11 @@ class TasksController extends Controller
      public function update(Request $request, $id)
     {
          $this->validate($request, [
-            'status' => 'required|max:10', 
+            'content' => "required|max:191",
+            'status' => "required|max:10", 
         ]);
         
-        $task = Task::find($id);
+        $task = Task::findOrFail($id);
         $task->status = $request->status;
         $task->content = $request->content;
         $task->save();
@@ -108,14 +110,14 @@ class TasksController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 指定されたリソースをストレージから削除します。
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
      public function destroy($id)
     {
-        $task = Task::find($id);
+        $task = Task::findOrFail($id);
         $task->delete();
 
         return redirect('/');
