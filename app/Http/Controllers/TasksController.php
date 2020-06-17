@@ -15,6 +15,11 @@ class TasksController extends Controller
      */
      public function index()
     {
+        // 未ログインだとwelcomeページに遷移
+        if(!\Auth::check()){
+            return view('welcome');
+        }
+        
         $tasks = Task::all();
 
         return view('tasks.index', [
@@ -49,9 +54,11 @@ class TasksController extends Controller
             'status' => "required|max:10", 
         ]);
         
+        
         $task = new Task;
         $task->status = $request->status;
         $task->content = $request->content;
+        $task->user_id = \Auth()->id();
         $task->save();
 
         return redirect('/');
@@ -66,6 +73,11 @@ class TasksController extends Controller
      public function show($id)
     {
         $task = Task::findOrFail($id);
+        
+        // 所有者以外はトップページにリダイレクト
+        if(\Auth::user()->id != $task->user_id){
+            return redirect('/');
+        }
 
         return view('tasks.show', [
             'task' => $task,
@@ -82,6 +94,11 @@ class TasksController extends Controller
     {
         $task = Task::findOrFail($id);
 
+        // 所有者以外はトップページにリダイレクト
+        if(\Auth::user()->id != $task->user_id){
+            return redirect('/');
+        }
+        
         return view('tasks.edit', [
             'task' => $task,
         ]);
@@ -104,6 +121,7 @@ class TasksController extends Controller
         $task = Task::findOrFail($id);
         $task->status = $request->status;
         $task->content = $request->content;
+        $task->user_id = \Auth()->id();
         $task->save();
 
         return redirect('/');
